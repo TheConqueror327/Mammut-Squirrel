@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script type="importmap">
+    {
+    "imports": {
+        "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
+        "three/": "https://unpkg.com/three@0.150.0/"
+        }
+    }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+    import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+    camera.position.z = 5;
+    camera.position.y = 3;
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    var geometry = new THREE.BoxGeometry(1, 1, 1);
+    var wallGeometry = new THREE.BoxGeometry(0.1, 4, 50);
+    var floorGeometry = new THREE.BoxGeometry(3.3, 0.1, 50);
+    var material = new THREE.MeshNormalMaterial();
+    var grayMaterial = new THREE.MeshBasicMaterial({color: 0x808080});
+    var darkGrayMaterial = new THREE.MeshBasicMaterial({color: 0x5A5A5A});
+    var cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    var cube2 = new THREE.Mesh(geometry, material);
+    scene.add(cube2);
+
+    var leftWall = new THREE.Mesh(wallGeometry, grayMaterial);
+    scene.add(leftWall);
+    leftWall.position.x = -1.6;
+    leftWall.position.z = -24.5;
+    leftWall.position.y = 1.5;
+
+    var rightWall = new THREE.Mesh(wallGeometry, grayMaterial);
+    scene.add(rightWall);
+    rightWall.position.x = 1.6;
+    rightWall.position.z = -24.5;
+    rightWall.position.y = 1.5;
+
+    var floor = new THREE.Mesh(floorGeometry, darkGrayMaterial);
+    scene.add(floor);
+    floor.position.y = -0.6;
+    floor.position.z = -24.5;
+
+    renderer.render(scene, camera);
+    cube2.position.z = -50;
+    let increment = 0.1;
+
+    var game3D = function () {
+    	requestAnimationFrame(game3D);
+    	renderer.render(scene, camera);
+        if (cube2.position.z != -1) {
+            cube2.position.z += increment;
+        }
+        if (cube2.position.z > 0) {
+            cube2.position.z = -50;
+            cube2.position.x = Math.round(Math.random() * 2 - 1);
+        }
+    };
+
+    
+
+    addEventListener("keydown", event => {
+        if ((event.code === 'KeyD') && (cube.position.x != 1)) {
+            cube.position.x++;
+        }
+        if ((event.code === 'KeyA') && (cube.position.x != -1)) {
+            cube.position.x--;
+        }
+        if (event.code === 'Space') {
+            cube.position.y = 1;
+            setTimeout(() => {
+                cube.position.y = 0;
+            }, 250);
+        }
+    })
+
+    game3D();
+
+</script>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+</body>
+</html>
