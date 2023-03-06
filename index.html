@@ -30,7 +30,6 @@
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-
     var geometry = new THREE.BoxGeometry(1, 1, 1);
     var wallGeometry = new THREE.BoxGeometry(0.1, 4, 50);
     var floorGeometry = new THREE.BoxGeometry(3.3, 0.1, 50);
@@ -81,9 +80,11 @@
     addEventListener("keydown", event => {
         if ((event.code === 'KeyD') && (cube.position.x != 1)) {
             cube.position.x++;
+            camera.position.x = cube.position.x;
         }
         if ((event.code === 'KeyA') && (cube.position.x != -1)) {
             cube.position.x--;
+            camera.position.x = cube.position.x;
         }
         if (event.code === 'Space') {
             cube.position.y = 1;
