@@ -27,32 +27,49 @@
     document.body.appendChild(renderer.domElement);
     camera.position.z = 5;
     camera.position.y = 3;
+    var mesh;
+    const loader = new STLLoader();
+    loader.load(
+        'elephant.stl',
+        (geometry) => {
+            mesh = new THREE.Mesh(geometry, material);
+            let box3 = new THREE.Box3().setFromObject(mesh);
+            let size = new THREE.Vector3();
+            let dimensions = box3.getSize(size);
+            mesh.scale.set(1 / dimensions.x, 1 / dimensions.x, 1 / dimensions.x);
+            mesh.position.set(0, 0, 3.5);
+            mesh.rotation.y = Math.PI / 1.2;
+            scene.add(mesh);
+            console.log(dimensions);
+            addEventListener("keydown", event => {
+                if ((event.code === 'KeyD') && (mesh.position.x != 1)) {
+                    mesh.position.x++;
+                    camera.position.x += 1;
+                }
+                if ((event.code === 'KeyA') && (mesh.position.x != -1)) {
+                    mesh.position.x--;
+                    camera.position.x -= 1;
+                }
+                if (event.code === 'Space') {
+                    mesh.position.y = 1;
+                    setTimeout(() => {
+                        mesh.position.y = 0;
+                    }, 250);
+                }
+            });
+        }
+    );
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var wallGeometry = new THREE.BoxGeometry(0.1, 4, 50);
-    var floorGeometry = new THREE.BoxGeometry(3.3, 0.1, 50);
+    var floorGeometry = new THREE.BoxGeometry(3.3, 0.1, 75);
     var material = new THREE.MeshNormalMaterial();
     var grayMaterial = new THREE.MeshBasicMaterial({color: 0x808080});
     var darkGrayMaterial = new THREE.MeshBasicMaterial({color: 0x5A5A5A});
-    var cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
 
     var cube2 = new THREE.Mesh(geometry, material);
     scene.add(cube2);
-
-    var leftWall = new THREE.Mesh(wallGeometry, grayMaterial);
-    scene.add(leftWall);
-    leftWall.position.x = -1.6;
-    leftWall.position.z = -24.5;
-    leftWall.position.y = 1.5;
-
-    var rightWall = new THREE.Mesh(wallGeometry, grayMaterial);
-    scene.add(rightWall);
-    rightWall.position.x = 1.6;
-    rightWall.position.z = -24.5;
-    rightWall.position.y = 1.5;
 
     var floor = new THREE.Mesh(floorGeometry, darkGrayMaterial);
     scene.add(floor);
@@ -74,25 +91,6 @@
             cube2.position.x = Math.round(Math.random() * 2 - 1);
         }
     };
-
-    
-
-    addEventListener("keydown", event => {
-        if ((event.code === 'KeyD') && (cube.position.x != 1)) {
-            cube.position.x++;
-            camera.position.x = cube.position.x;
-        }
-        if ((event.code === 'KeyA') && (cube.position.x != -1)) {
-            cube.position.x--;
-            camera.position.x = cube.position.x;
-        }
-        if (event.code === 'Space') {
-            cube.position.y = 1;
-            setTimeout(() => {
-                cube.position.y = 0;
-            }, 250);
-        }
-    })
 
     game3D();
 
