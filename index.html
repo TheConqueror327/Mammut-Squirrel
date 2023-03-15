@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Squirrel-Run</title>
 </head>
 <body>
 <script type="importmap">
@@ -30,48 +30,64 @@
     var mesh;
     const loader = new STLLoader();
     loader.load(
-        'elephant.stl',
+        'models/elephant.stl',
         (geometry) => {
-            mesh = new THREE.Mesh(geometry, material);
+            mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x524f4c}));
             let box3 = new THREE.Box3().setFromObject(mesh);
             let size = new THREE.Vector3();
             let dimensions = box3.getSize(size);
             mesh.scale.set(1 / dimensions.x, 1 / dimensions.x, 1 / dimensions.x);
-            mesh.position.set(0, 0, 3.5);
             mesh.rotation.y = Math.PI / 1.2;
+            mesh.position.set(2, 0, 4.75);
             scene.add(mesh);
             console.log(dimensions);
-            addEventListener("keydown", event => {
-                if ((event.code === 'KeyD') && (mesh.position.x != 1)) {
-                    mesh.position.x++;
-                    camera.position.x += 1;
-                }
-                if ((event.code === 'KeyA') && (mesh.position.x != -1)) {
-                    mesh.position.x--;
-                    camera.position.x -= 1;
-                }
-                if (event.code === 'Space') {
-                    mesh.position.y = 1;
-                    setTimeout(() => {
-                        mesh.position.y = 0;
-                    }, 250);
-                }
-            });
         }
     );
+    var squirrel;
+    loader.load(
+        'models/squirrel.stl',
+        (geometry) => {
+            squirrel = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color : 0xba6d25}));
+            let dim2 = new THREE.Box3().setFromObject(squirrel).getSize(new THREE.Vector3());
+            squirrel.scale.set(1 / dim2.y, 1 / dim2.y, 1 / dim2.y);
+            squirrel.rotation.set(Math.PI / 2, Math.PI, 0);
+            squirrel.position.set(0, 0, 0);
+            scene.add(squirrel);
+        }
+    )
 
+    addEventListener("keydown", event => {
+        if ((event.code === 'KeyD') && (mesh.position.x != 3)) {
+            mesh.position.x++;
+            squirrel.position.x++;
+            camera.position.x += 1;
+        }
+        if ((event.code === 'KeyA') && (mesh.position.x != 1)) {
+            mesh.position.x--;
+            squirrel.position.x--;
+            camera.position.x -= 1;
+        }
+        if (event.code === 'Space') {
+            mesh.position.y = 1;
+            squirrel.position.y = 1;
+            setTimeout(() => {
+                mesh.position.y = 0;
+                squirrel.position.y = 0;
+            }, 200);
+        }
+    });
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     var geometry = new THREE.BoxGeometry(1, 1, 1);
     var floorGeometry = new THREE.BoxGeometry(3.3, 0.1, 75);
     var material = new THREE.MeshNormalMaterial();
     var grayMaterial = new THREE.MeshBasicMaterial({color: 0x808080});
-    var darkGrayMaterial = new THREE.MeshBasicMaterial({color: 0x5A5A5A});
+    var floorMaterial = new THREE.MeshBasicMaterial({color: 0x73c72e});
 
     var cube2 = new THREE.Mesh(geometry, material);
     scene.add(cube2);
 
-    var floor = new THREE.Mesh(floorGeometry, darkGrayMaterial);
+    var floor = new THREE.Mesh(floorGeometry, floorMaterial);
     scene.add(floor);
     floor.position.y = -0.6;
     floor.position.z = -24.5;
