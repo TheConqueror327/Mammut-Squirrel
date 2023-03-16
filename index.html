@@ -32,7 +32,7 @@
     loader.load(
         'models/elephant.stl',
         (geometry) => {
-            mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x524f4c}));
+            mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x524f4c}));
             let box3 = new THREE.Box3().setFromObject(mesh);
             let size = new THREE.Vector3();
             let dimensions = box3.getSize(size);
@@ -47,11 +47,11 @@
     loader.load(
         'models/squirrel.stl',
         (geometry) => {
-            squirrel = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color : 0xba6d25}));
+            squirrel = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color : 0xba6d25}));
             let dim2 = new THREE.Box3().setFromObject(squirrel).getSize(new THREE.Vector3());
             squirrel.scale.set(1 / dim2.y, 1 / dim2.y, 1 / dim2.y);
             squirrel.rotation.set(Math.PI / 2, Math.PI, 0);
-            squirrel.position.set(0, 0, 0);
+            squirrel.position.set(0, 0, 1);
             scene.add(squirrel);
         }
     )
@@ -75,14 +75,17 @@
                 squirrel.position.y = 0;
             }, 200);
         }
+        if (event.keyCode === 27) {
+
+        }
     });
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     var geometry = new THREE.BoxGeometry(1, 1, 1);
     var floorGeometry = new THREE.BoxGeometry(3.3, 0.1, 75);
     var material = new THREE.MeshNormalMaterial();
-    var grayMaterial = new THREE.MeshBasicMaterial({color: 0x808080});
-    var floorMaterial = new THREE.MeshBasicMaterial({color: 0x73c72e});
+    var grayMaterial = new THREE.MeshStandardMaterial({color: 0x808080});
+    var floorMaterial = new THREE.MeshStandardMaterial({color: 0x73c72e});
 
     var cube2 = new THREE.Mesh(geometry, material);
     scene.add(cube2);
@@ -92,8 +95,9 @@
     floor.position.y = -0.6;
     floor.position.z = -24.5;
 
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
     renderer.render(scene, camera);
-    cube2.position.z = -50;
+    cube2.position.set(Math.round(Math.random() * 2 - 1), 0, -50);
     let increment = 0.1;
 
     var game3D = function () {
@@ -102,9 +106,13 @@
         if (cube2.position.z != -1) {
             cube2.position.z += increment;
         }
-        if (cube2.position.z > 0) {
+        if (cube2.position.z > 7) {
             cube2.position.z = -50;
             cube2.position.x = Math.round(Math.random() * 2 - 1);
+        }
+        if ((cube2.position.z > 0) && (cube2.position.x == squirrel.position.x)) {
+            alert('Vesztettél!');
+            cube2.position.z = -50;
         }
     };
 
