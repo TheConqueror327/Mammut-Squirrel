@@ -30,64 +30,70 @@
     camera.position.z = 5;
     camera.position.y = 3;
     var mammut;
-    const loader = new STLLoader();
-    loader.load(
-        'models/elephant.stl',
-        (geometry) => {
-            mammut = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x94918d}));
-            let box3 = new THREE.Box3().setFromObject(mammut);
-            let size = new THREE.Vector3();
-            let dimensions = box3.getSize(size);
-            mammut.scale.set(1 / dimensions.x, 1 / dimensions.x, 1 / dimensions.x);
-            mammut.rotation.y = Math.PI / 1.2;
-            mammut.position.set(2, 0, 4.75);
-            scene.add(mammut);
-            console.log(mammut.position);
-        }
-    );
     var squirrel;
-    loader.load(
-        'models/squirrel.stl',
-        (geometry) => {
-            squirrel = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color : 0xba6d25}));
-            let dim2 = new THREE.Box3().setFromObject(squirrel).getSize(new THREE.Vector3());
-            squirrel.scale.set(1 / dim2.y, 1 / dim2.y, 1 / dim2.y);
-            squirrel.rotation.set(Math.PI / 2, Math.PI, 0);
-            squirrel.position.set(0, 0, 1);
-            scene.add(squirrel);
-        }
-    )
     var oakLog;
-    loader.load(
-        'models/faronk.stl',
-        (geometry) => {
-            oakLog = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x4f3414}));
-            let dim3 = new THREE.Box3().setFromObject(oakLog).getSize(new THREE.Vector3());
-            oakLog.rotation.z = Math.PI / 2;
-            oakLog.scale.set(1 / 7 * dim3.x, 1 / 7 * dim3.x, 1 / 7 * dim3.x);
-            oakLog.position.set(Math.round(Math.random() - 1), 0, -50);
-            scene.add(oakLog);
-        }
-    )
-    var oakLogRotations = [0, Math.PI / 2]
+    function load3DModels() {
+        const loader = new STLLoader();
+        loader.load(
+            'models/elephant.stl',
+            (geometry) => {
+                mammut = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x94918d}));
+                let box3 = new THREE.Box3().setFromObject(mammut);
+                let size = new THREE.Vector3();
+                let dimensions = box3.getSize(size);
+                mammut.scale.set(1 / dimensions.x, 1 / dimensions.x, 1 / dimensions.x);
+                mammut.rotation.y = Math.PI / 1.2;
+                mammut.position.set(2, 0, 4.75);
+                scene.add(mammut);
+            }
+        );
+        loader.load(
+            'models/squirrel.stl',
+            (geometry) => {
+                squirrel = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color : 0xba6d25}));
+                let dim2 = new THREE.Box3().setFromObject(squirrel).getSize(new THREE.Vector3());
+                squirrel.scale.set(1 / dim2.y, 1 / dim2.y, 1 / dim2.y);
+                squirrel.rotation.set(Math.PI / 2, Math.PI, 0);
+                squirrel.position.set(0, 0, 1);
+                scene.add(squirrel);
+            }
+        );
+        loader.load(
+            'models/faronk.stl',
+            (geometry) => {
+                oakLog = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x4f3414}));
+                let dim3 = new THREE.Box3().setFromObject(oakLog).getSize(new THREE.Vector3());
+                oakLog.rotation.z = Math.PI / 2;
+                oakLog.scale.set(1 / 7 * dim3.x, 1 / 7 * dim3.x, 1 / 7 * dim3.x);
+                oakLog.position.set(Math.round(Math.random() - 1), 0.5, -50);
+                scene.add(oakLog);
+            }
+        );
+    }
+    load3DModels();
+    var oakLogRotations = [0, Math.PI / 2];
+    var motionDuration = 200;
+    var jumpingDuration = 500;
     addEventListener("keydown", event => {
-        if ((event.code === 'KeyD') && (mammut.position.x != 3)) {
-            mammut.position.x++;
-            squirrel.position.x++;
-            camera.position.x += 1;
+        if ((event.code === 'KeyD') && (mammut.position.x <= 2)) {
+            animateObjectMotion(mammut, {x: mammut.position.x + 1}, motionDuration);
+            animateObjectMotion(squirrel, {x: squirrel.position.x + 1}, motionDuration);
+            animateObjectMotion(camera, {x: camera.position.x + 1}, motionDuration);
+            console.log(squirrel.position.x);
         }
-        if ((event.code === 'KeyA') && (mammut.position.x != 1)) {
-            mammut.position.x--;
-            squirrel.position.x--;
-            camera.position.x -= 1;
+        if ((event.code === 'KeyA') && (mammut.position.x >= 2)) {
+            animateObjectMotion(mammut, {x: mammut.position.x - 1}, motionDuration);
+            animateObjectMotion(squirrel, {x: squirrel.position.x - 1}, motionDuration);
+            animateObjectMotion(camera, {x: camera.position.x - 1}, motionDuration);
+            console.log(squirrel.position.x);
         }
         if (event.code === 'Space') {
-            mammut.position.y = 1;
-            squirrel.position.y = 1;
+            animateObjectMotion(mammut, {y: 1}, motionDuration);
+            animateObjectMotion(squirrel, {y: 1}, motionDuration);
             setTimeout(() => {
-                mammut.position.y = 0;
-                squirrel.position.y = 0;
-            }, 200);
+                animateObjectMotion(mammut, {y: 0}, motionDuration);
+                animateObjectMotion(squirrel, {y: 0}, motionDuration);
+            }, 200);   
         }
     });
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -100,15 +106,19 @@
 
     var floor = new THREE.Mesh(floorGeometry, floorMaterial);
     scene.add(floor);
-    floor.position.y = -0.6;
-    floor.position.z = -24.5;
+    floor.position.set(0, -0.1, -24.5);
 
     scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
     renderer.render(scene, camera);
-    let increment = 0.4;
-
+    let increment = 0.2;
     const stats = new Stats();
     document.body.appendChild(stats.dom);
+
+    function animateObjectMotion(object, coordinates, duration) {
+        var tween = new TWEEN.Tween(object.position).to(coordinates, duration).easing(TWEEN.Easing.Quadratic.InOut);
+        tween.start();
+    }
+       
     var game3D = function () {
     	requestAnimationFrame(game3D);
     	renderer.render(scene, camera);
@@ -125,6 +135,7 @@
             oakLog.position.z = -50;
         }
         stats.update();
+        TWEEN.update();
     };
 
     game3D();
