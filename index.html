@@ -20,6 +20,8 @@
     import * as THREE from 'three';
     import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
     import {STLLoader} from 'three/examples/jsm/loaders/STLLoader.js';
+    import {TWEEN} from 'three/examples/jsm/libs/tween.module.min.js';
+    import Stats from 'three/examples/jsm/libs/stats.module';
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     var renderer = new THREE.WebGLRenderer();
@@ -27,20 +29,20 @@
     document.body.appendChild(renderer.domElement);
     camera.position.z = 5;
     camera.position.y = 3;
-    var mesh;
+    var mammut;
     const loader = new STLLoader();
     loader.load(
         'models/elephant.stl',
         (geometry) => {
-            mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x524f4c}));
-            let box3 = new THREE.Box3().setFromObject(mesh);
+            mammut = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x94918d}));
+            let box3 = new THREE.Box3().setFromObject(mammut);
             let size = new THREE.Vector3();
             let dimensions = box3.getSize(size);
-            mesh.scale.set(1 / dimensions.x, 1 / dimensions.x, 1 / dimensions.x);
-            mesh.rotation.y = Math.PI / 1.2;
-            mesh.position.set(2, 0, 4.75);
-            scene.add(mesh);
-            console.log(dimensions);
+            mammut.scale.set(1 / dimensions.x, 1 / dimensions.x, 1 / dimensions.x);
+            mammut.rotation.y = Math.PI / 1.2;
+            mammut.position.set(2, 0, 4.75);
+            scene.add(mammut);
+            console.log(mammut.position);
         }
     );
     var squirrel;
@@ -55,28 +57,37 @@
             scene.add(squirrel);
         }
     )
-
+    var oakLog;
+    loader.load(
+        'models/faronk.stl',
+        (geometry) => {
+            oakLog = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x4f3414}));
+            let dim3 = new THREE.Box3().setFromObject(oakLog).getSize(new THREE.Vector3());
+            oakLog.rotation.z = Math.PI / 2;
+            oakLog.scale.set(1 / 7 * dim3.x, 1 / 7 * dim3.x, 1 / 7 * dim3.x);
+            oakLog.position.set(Math.round(Math.random() - 1), 0, -50);
+            scene.add(oakLog);
+        }
+    )
+    var oakLogRotations = [0, Math.PI / 2]
     addEventListener("keydown", event => {
-        if ((event.code === 'KeyD') && (mesh.position.x != 3)) {
-            mesh.position.x++;
+        if ((event.code === 'KeyD') && (mammut.position.x != 3)) {
+            mammut.position.x++;
             squirrel.position.x++;
             camera.position.x += 1;
         }
-        if ((event.code === 'KeyA') && (mesh.position.x != 1)) {
-            mesh.position.x--;
+        if ((event.code === 'KeyA') && (mammut.position.x != 1)) {
+            mammut.position.x--;
             squirrel.position.x--;
             camera.position.x -= 1;
         }
         if (event.code === 'Space') {
-            mesh.position.y = 1;
+            mammut.position.y = 1;
             squirrel.position.y = 1;
             setTimeout(() => {
-                mesh.position.y = 0;
+                mammut.position.y = 0;
                 squirrel.position.y = 0;
             }, 200);
-        }
-        if (event.keyCode === 27) {
-
         }
     });
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -87,9 +98,6 @@
     var grayMaterial = new THREE.MeshStandardMaterial({color: 0x808080});
     var floorMaterial = new THREE.MeshStandardMaterial({color: 0x73c72e});
 
-    var cube2 = new THREE.Mesh(geometry, material);
-    scene.add(cube2);
-
     var floor = new THREE.Mesh(floorGeometry, floorMaterial);
     scene.add(floor);
     floor.position.y = -0.6;
@@ -97,23 +105,26 @@
 
     scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
     renderer.render(scene, camera);
-    cube2.position.set(Math.round(Math.random() * 2 - 1), 0, -50);
-    let increment = 0.1;
+    let increment = 0.4;
 
+    const stats = new Stats();
+    document.body.appendChild(stats.dom);
     var game3D = function () {
     	requestAnimationFrame(game3D);
     	renderer.render(scene, camera);
-        if (cube2.position.z != -1) {
-            cube2.position.z += increment;
+        if (oakLog.position.z != -1) {
+            oakLog.position.z += increment;
         }
-        if (cube2.position.z > 7) {
-            cube2.position.z = -50;
-            cube2.position.x = Math.round(Math.random() * 2 - 1);
+        if (oakLog.position.z > 7) {
+            oakLog.position.z = -50;
+            oakLog.position.x = Math.round(Math.random()) - 1;
+            oakLog.rotation.z = oakLogRotations[Math.round(Math.random())];
         }
-        if ((cube2.position.z > 0) && (cube2.position.x == squirrel.position.x)) {
-            alert('Vesztettél!');
-            cube2.position.z = -50;
+        if ((oakLog.position.z > 0) && (oakLog.position.x == squirrel.position.x)) {
+            //alert('Vesztettél!');
+            oakLog.position.z = -50;
         }
+        stats.update();
     };
 
     game3D();
