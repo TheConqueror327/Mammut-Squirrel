@@ -29,19 +29,16 @@
     document.body.appendChild(renderer.domElement);
     camera.position.z = 5;
     camera.position.y = 3;
-    var mammut;
-    var squirrel;
-    var oakLog;
+    var mammut, squirrel, oakLog, stone;
+
     function load3DModels() {
         const loader = new STLLoader();
         loader.load(
             'models/elephant.stl',
             (geometry) => {
                 mammut = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x94918d}));
-                let box3 = new THREE.Box3().setFromObject(mammut);
-                let size = new THREE.Vector3();
-                let dimensions = box3.getSize(size);
-                mammut.scale.set(1 / dimensions.x, 1 / dimensions.x, 1 / dimensions.x);
+                let dim = new THREE.Box3().setFromObject(mammut).getSize(new THREE.Vector3());
+                mammut.scale.set(1 / dim.x, 1 / dim.x, 1 / dim.x);
                 mammut.rotation.y = Math.PI / 1.2;
                 mammut.position.set(2, 0, 4.75);
                 scene.add(mammut);
@@ -65,21 +62,32 @@
                 let dim3 = new THREE.Box3().setFromObject(oakLog).getSize(new THREE.Vector3());
                 oakLog.rotation.z = Math.PI / 2;
                 oakLog.scale.set(1 / 7 * dim3.x, 1 / 7 * dim3.x, 1 / 7 * dim3.x);
-                oakLog.position.set(Math.round(Math.random() - 1), 0.5, -50);
-                scene.add(oakLog);
+                oakLog.position.set(Math.round(Math.random() - 1), 0.25, -50);
+            }
+        );
+        loader.load(
+            'models/stone.stl',
+            (geometry) => {
+                stone = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x808080}));
+                let dim4 = new THREE.Box3().setFromObject(stone).getSize(new THREE.Vector3());
+                stone.rotation.y = Math.PI / 2;
+                stone.scale.set(1 / dim4.x, 1 / dim4.x, 1 / dim4.x);
+                stone.position.set(Math.round(Math.random() * 2 - 1), 0, -50);
             }
         );
     }
+
     load3DModels();
+
     var oakLogRotations = [0, Math.PI / 2];
     var motionDuration = 200;
     var jumpingDuration = 500;
+
     addEventListener("keydown", event => {
         if ((event.code === 'KeyD') && (mammut.position.x <= 2)) {
             animateObjectMotion(mammut, {x: mammut.position.x + 1}, motionDuration);
             animateObjectMotion(squirrel, {x: squirrel.position.x + 1}, motionDuration);
             animateObjectMotion(camera, {x: camera.position.x + 1}, motionDuration);
-            console.log(squirrel.position.x);
         }
         if ((event.code === 'KeyA') && (mammut.position.x >= 2)) {
             animateObjectMotion(mammut, {x: mammut.position.x - 1}, motionDuration);
@@ -96,8 +104,10 @@
             }, 200);   
         }
     });
+
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+
     var geometry = new THREE.BoxGeometry(1, 1, 1);
     var floorGeometry = new THREE.BoxGeometry(3.3, 0.1, 75);
     var material = new THREE.MeshNormalMaterial();
@@ -110,7 +120,9 @@
 
     scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
     renderer.render(scene, camera);
+
     let increment = 0.2;
+
     const stats = new Stats();
     document.body.appendChild(stats.dom);
 
@@ -118,21 +130,45 @@
         var tween = new TWEEN.Tween(object.position).to(coordinates, duration).easing(TWEEN.Easing.Quadratic.InOut);
         tween.start();
     }
-       
+    
+    var barrierObjects, randomBarrier, activeBarrier;
+
+    function initializeBarriers() {
+        barrierObjects = [oakLog, stone];
+        randomBarrier = Math.round(Math.random());
+        activeBarrier = barrierObjects[randomBarrier];
+        scene.add(activeBarrier);
+    }
+
     var game3D = function () {
     	requestAnimationFrame(game3D);
     	renderer.render(scene, camera);
-        if (oakLog.position.z != -1) {
-            oakLog.position.z += increment;
-        }
-        if (oakLog.position.z > 7) {
-            oakLog.position.z = -50;
-            oakLog.position.x = Math.round(Math.random()) - 1;
-            oakLog.rotation.z = oakLogRotations[Math.round(Math.random())];
-        }
-        if ((oakLog.position.z > 0) && (oakLog.position.x == squirrel.position.x)) {
-            //alert('Vesztettél!');
-            oakLog.position.z = -50;
+        try {
+            if (activeBarrier.position.z != -1) {
+                activeBarrier.position.z += increment;
+            }
+            if (activeBarrier.position.z > 7) {
+                activeBarrier.position.z = -50;
+                scene.remove(activeBarrier);
+                randomBarrier = Math.round(Math.random());
+                activeBarrier = barrierObjects[randomBarrier];
+                scene.add(activeBarrier);
+                if (randomBarrier == 0) {
+                    activeBarrier.position.x = Math.round(Math.random()) - 1;
+                    let randonRotation = Math.round(Math.random());
+                    activeBarrier.rotation.z = oakLogRotations[randonRotation];
+                    if (randonRotation == 0) {
+                        activeBarrier.position.y = 1.5;
+                    } else {
+                        activeBarrier.position.y = 0.5;
+                    }
+                } else {
+                    activeBarrier.position.x = Math.round(Math.random() * 2 - 1);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            initializeBarriers();
         }
         stats.update();
         TWEEN.update();
