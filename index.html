@@ -31,7 +31,7 @@
     camera.position.y = 2;
     const textureLoader = new THREE.TextureLoader();
     scene.background = textureLoader.load('backgrounds/hatter1.jpg');
-    var mammut, squirrel, oakLog, stone;
+    var mammut, squirrel, oakLog, stone, downHill, oakBoard;
 
     function load3DModels() {
         const loader = new STLLoader();
@@ -77,6 +77,23 @@
                 stone.position.set(Math.round(Math.random() * 2 - 1), 0, -50);
             }
         );
+        loader.load(
+            'models/lejto2.stl',
+            (geometry) => {
+                downHill = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
+                downHill.position.set(3, 3, 3);
+                scene.add(downHill);
+            }
+        );
+        loader.load(
+            'models/deszka.stl',
+            (geometry) => {
+                oakBoard = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
+                oakBoard.position.set(3, 2.8, 2.2);
+                oakBoard.rotation.set(Math.PI / -2, 0, Math.PI)
+                scene.add(oakBoard);
+            }
+        )
     }
 
     load3DModels();
