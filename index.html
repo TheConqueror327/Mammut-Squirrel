@@ -10,6 +10,7 @@
     <div id="menu">
         Menu
     </div>
+    <div id="game"></div>
 <script type="importmap">
     {
     "imports": {
@@ -29,7 +30,7 @@
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    document.getElementById('game').appendChild(renderer.domElement);
     camera.position.set(0.015, 1.5, 4.3);
     const textureLoader = new THREE.TextureLoader();
     scene.background = textureLoader.load('backgrounds/hatter1.jpg');
@@ -145,10 +146,12 @@
             if (!isStopped) {
                 cancelAnimationFrame(rAF);
                 menu.style.display = 'block';
+                document.getElementById('game').style.opacity = 0.5;
                 isStopped = true;
             } else {
                 game3D();
                 menu.style.display = 'none';
+                document.getElementById('game').style.opacity = 1;
                 isStopped = false;
             }
         }
@@ -170,7 +173,7 @@
     scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
     renderer.render(scene, camera);
 
-    let increment = 0.4;
+    let increment = 0.2;
 
     function animateObjectMotion(object, coordinates, duration) {
         var tween = new TWEEN.Tween(object.position).to(coordinates, duration).easing(TWEEN.Easing.Quadratic.InOut);
@@ -232,6 +235,14 @@
 <style>
     body {
         margin: 0;
+    }
+    #game {
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        transition: 1s;
     }
     #menu {
         position: absolute;
