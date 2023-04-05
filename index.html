@@ -7,6 +7,9 @@
     <title>Squirrel-Run</title>
 </head>
 <body>
+    <div id="menu">
+        Menu
+    </div>
 <script type="importmap">
     {
     "imports": {
@@ -21,17 +24,18 @@
     import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
     import {STLLoader} from 'three/examples/jsm/loaders/STLLoader.js';
     import {TWEEN} from 'three/examples/jsm/libs/tween.module.min.js';
-    import Stats from 'three/examples/jsm/libs/stats.module';
+
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-    camera.position.z = 5;
-    camera.position.y = 2;
+    camera.position.set(0.015, 1.5, 4.3);
     const textureLoader = new THREE.TextureLoader();
     scene.background = textureLoader.load('backgrounds/hatter1.jpg');
-    var mammut, squirrel, oakLog, stone, downHill, oakBoard;
+
+    var mammut, squirrel, oakLog, stone, downHill, oakBoard, coin;
+    const hillGroup = new THREE.Group();
 
     function load3DModels() {
         const loader = new STLLoader();
@@ -42,7 +46,7 @@
                 let dim = new THREE.Box3().setFromObject(mammut).getSize(new THREE.Vector3());
                 mammut.scale.set(1 / dim.x, 1 / dim.x, 1 / dim.x);
                 mammut.rotation.y = Math.PI / 1.2;
-                mammut.position.set(2, 0, 4.75);
+                mammut.position.set(2, 0, /*5.3*/7);
                 scene.add(mammut);
             }
         );
@@ -80,18 +84,31 @@
         loader.load(
             'models/lejto2.stl',
             (geometry) => {
-                downHill = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
-                downHill.position.set(3, 3, 3);
-                scene.add(downHill);
+                downHill = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x808080}));
+                let dim5 = new THREE.Box3().setFromObject(downHill).getSize(new THREE.Vector3());
+                downHill.scale.set(1 / dim5.x, 1 / dim5.x, 1 / dim5.x);
+                downHill.position.set(0, 0.5, 3);
+                hillGroup.add(downHill);
             }
         );
         loader.load(
             'models/deszka.stl',
             (geometry) => {
-                oakBoard = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
-                oakBoard.position.set(3, 2.8, 2.2);
-                oakBoard.rotation.set(Math.PI / -2, 0, Math.PI)
-                scene.add(oakBoard);
+                oakBoard = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0x4f3414}));
+                let dim6 = new THREE.Box3().setFromObject(oakBoard).getSize(new THREE.Vector3());
+                oakBoard.scale.set(1 / dim6.x, 1 / dim6.x, 1 / dim6.x);
+                oakBoard.position.set(0, 0.5, 2.9);
+                oakBoard.rotation.set(Math.PI / -2, 0, Math.PI);
+                hillGroup.add(oakBoard);
+            }
+        )
+        loader.load(
+            'models/coin2.stl',
+            (geometry) => {
+                coin = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0xfcb125}));
+                let dim7 = new THREE.Box3().setFromObject(coin).getSize(new THREE.Vector3());
+                coin.scale.set(1 / (2 * dim7.x), 1 / (2 * dim7.x), 1 / (2 * dim7.x));
+                coin.position.y = 0.25;
             }
         )
     }
@@ -101,6 +118,9 @@
     var oakLogRotations = [0, Math.PI / 2];
     var motionDuration = 200;
     var jumpingDuration = 500;
+    var rAF;
+    let isStopped = false;
+    const menu = document.getElementById('menu');
 
     addEventListener("keydown", event => {
         if ((event.code === 'KeyD') && (mammut.position.x <= 2)) {
@@ -112,15 +132,25 @@
             animateObjectMotion(mammut, {x: mammut.position.x - 1}, motionDuration);
             animateObjectMotion(squirrel, {x: squirrel.position.x - 1}, motionDuration);
             animateObjectMotion(camera, {x: camera.position.x - 1}, motionDuration);
-            console.log(squirrel.position.x);
         }
         if (event.code === 'Space') {
-            animateObjectMotion(mammut, {y: 1}, motionDuration);
-            animateObjectMotion(squirrel, {y: 1}, motionDuration);
+            animateObjectMotion(mammut, {y: squirrel.position.y + 1}, motionDuration);
+            animateObjectMotion(squirrel, {y: squirrel.position.y + 1}, motionDuration);
             setTimeout(() => {
-                animateObjectMotion(mammut, {y: 0}, motionDuration);
-                animateObjectMotion(squirrel, {y: 0}, motionDuration);
+                animateObjectMotion(mammut, {y: mammut.position.y - 1}, motionDuration);
+                animateObjectMotion(squirrel, {y: squirrel.position.y - 1}, motionDuration);
             }, 200);   
+        }
+        if (event.code === 'Escape') {
+            if (!isStopped) {
+                cancelAnimationFrame(rAF);
+                menu.style.display = 'block';
+                isStopped = true;
+            } else {
+                game3D();
+                menu.style.display = 'none';
+                isStopped = false;
+            }
         }
     });
 
@@ -140,43 +170,48 @@
     scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
     renderer.render(scene, camera);
 
-    let increment = 0.2;
-
-    const stats = new Stats();
-    document.body.appendChild(stats.dom);
+    let increment = 0.4;
 
     function animateObjectMotion(object, coordinates, duration) {
         var tween = new TWEEN.Tween(object.position).to(coordinates, duration).easing(TWEEN.Easing.Quadratic.InOut);
         tween.start();
     }
-    
+
+    hillGroup.rotation.y = Math.PI;
+    hillGroup.position.set(Math.round(Math.random() * 2 - 1), 0, -50);
     var barrierObjects, randomBarrier, activeBarrier;
 
     function initializeBarriers() {
-        barrierObjects = [oakLog, stone];
-        randomBarrier = Math.round(Math.random());
+        barrierObjects = [oakLog, stone, hillGroup];
+        randomBarrier = Math.round(Math.random() * 2);
         activeBarrier = barrierObjects[randomBarrier];
         scene.add(activeBarrier);
     }
 
-    var game3D = function () {
-    	requestAnimationFrame(game3D);
+    var game3D = () => {
+    	rAF = requestAnimationFrame(game3D);
     	renderer.render(scene, camera);
         try {
             if (activeBarrier.position.z != -1) {
                 activeBarrier.position.z += increment;
             }
-            if (activeBarrier.position.z > 7) {
+            if ((activeBarrier.position.z > 1) && (Math.round(activeBarrier.position.x) == Math.round(squirrel.position.x)) && (randomBarrier == 2) && (squirrel.position.y < 1.1)) {
+                squirrel.position.y = (1.093 * (activeBarrier.position.z / 2 - squirrel.position.z / 2)) / 2.609;
+            }
+            if ((activeBarrier.position.z > 2.609) && (Math.round(activeBarrier.position.x) == Math.round(squirrel.position.x)) && (randomBarrier == 2)) {
+                animateObjectMotion(squirrel, {y: squirrel.position.y - 1}, 500);
+            }
+            if (activeBarrier.position.z > 10) {
                 activeBarrier.position.z = -50;
                 scene.remove(activeBarrier);
-                randomBarrier = Math.round(Math.random());
+                randomBarrier = Math.round(Math.random() * 2);
                 activeBarrier = barrierObjects[randomBarrier];
                 scene.add(activeBarrier);
                 if (randomBarrier == 0) {
                     activeBarrier.position.x = Math.round(Math.random()) - 1;
-                    let randonRotation = Math.round(Math.random());
-                    activeBarrier.rotation.z = oakLogRotations[randonRotation];
-                    if (randonRotation == 0) {
+                    let randomRotation = Math.round(Math.random());
+                    activeBarrier.rotation.z = oakLogRotations[randomRotation];
+                    if (randomRotation == 0) {
                         activeBarrier.position.y = 1.5;
                     } else {
                         activeBarrier.position.y = 0.5;
@@ -189,16 +224,24 @@
             console.log(error);
             initializeBarriers();
         }
-        stats.update();
         TWEEN.update();
     };
 
     game3D();
-
 </script>
 <style>
     body {
         margin: 0;
+    }
+    #menu {
+        position: absolute;
+        width: 50%;
+        height: 50%;
+        transform: translate(50%);
+        top: 25%;
+        background-color: darkgray;
+        z-index: 2;
+        display: none;
     }
 </style>
 </body>
