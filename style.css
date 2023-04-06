@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+}
+#game {
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    transition: 1s;
+}
+#menu {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform: translate(50%);
+    top: 25%;
+    background-color: darkgray;
+    z-index: 2;
+    border-radius: 10px;
+    display: none;
+}
+    #menu-sidebar {
+        position: absolute;
+        width: 20%;
+        height: 90%;
+        margin: 2.5%;
+        border-radius: 10px;
+        background-color: cornflowerblue;
+    }
+    .menu-sidebar-h2 {
+        display: flex;
+        justify-content: center;
+        font-family: Arial;
+    }
+    #settings {
+        width: 70%;
+        height: 90%;
+        border-radius: 10px;
+        margin: 2.5%;
+        background-color: darkslategray;
+        float: right;
+    }
