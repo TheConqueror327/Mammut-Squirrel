@@ -9,16 +9,22 @@ body {
     padding: 0;
     transition: 1s;
 }
+:root {
+    --menuBackGround: rgb(50, 50, 50);
+    --menuSideBar: rgb(100, 100, 100);
+    --lightBlue: rgb(130, 230, 230);
+}
 #menu {
     position: absolute;
     width: 50%;
     height: 50%;
     transform: translate(50%);
     top: 25%;
-    background-color: darkgray;
     z-index: 2;
+    background-color: var(--menuBackGround);
     border-radius: 10px;
     display: none;
+    border: 2px solid var(--lightBlue);
 }
     #menu-sidebar {
         position: absolute;
@@ -26,7 +32,8 @@ body {
         height: 90%;
         margin: 2.5%;
         border-radius: 10px;
-        background-color: cornflowerblue;
+        background-color: var(--menuSideBar);
+        border: 2px solid var(--lightBlue);
     }
     .menu-sidebar-h2 {
         display: flex;
@@ -38,8 +45,9 @@ body {
         height: 90%;
         border-radius: 10px;
         margin: 2.5%;
-        background-color: darkslategray;
+        background-color: var(--menuSideBar);
         float: right;
+        border: 2px solid var(--lightBlue);
     }
     .menu-sidebar-h3 {
         display: flex;
