@@ -10,7 +10,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('game').appendChild(renderer.domElement);
 camera.position.set(0.015, 3, 7.5);
 const textureLoader = new THREE.TextureLoader();
-scene.background = textureLoader.load('backgrounds/hatter1.svg');
+scene.background = textureLoader.load('backgrounds/hatterjo.svg');
 
 var mammut, squirrel, oakLog, stone, downHill, oakBoard, coin;
 const hillGroup = new THREE.Group();
