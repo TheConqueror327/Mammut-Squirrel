@@ -96,6 +96,7 @@ load3DModels();
 var oakLogRotations = [0, Math.PI / 2];
 var motionDuration = 200;
 var rAF;
+var points = 0;
 let isStopped = false;
 const menu = document.getElementById('menu');
 
@@ -167,6 +168,8 @@ function initializeBarriers() {
 var game3D = () => {
 	rAF = requestAnimationFrame(game3D);
 	renderer.render(scene, camera);
+    document.getElementById('points').innerHTML = `Pontszám: ${points}`;
+    points++;
     try {
         if (activeBarrier.position.z != -1) {
             activeBarrier.position.z += increment;

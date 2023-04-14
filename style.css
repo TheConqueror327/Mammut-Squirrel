@@ -61,3 +61,16 @@ body {
     a:hover {
         color: azure;
     }
+.divOfPoints {
+    position: absolute;
+    margin-left: 90%;
+    width: 10%;
+    height: 5%;
+    z-index: 3;
+    background-color: white;
+}
+    #points {
+        display: flex;
+        justify-content: center;
+        transform: translateY(-50%);
+    }
