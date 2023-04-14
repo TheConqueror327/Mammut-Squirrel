@@ -8,7 +8,7 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeigh
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('game').appendChild(renderer.domElement);
-camera.position.set(0.015, 1.5, 4.3);
+camera.position.set(0.015, 3, 7.5);
 const textureLoader = new THREE.TextureLoader();
 scene.background = textureLoader.load('backgrounds/hatter1.jpg');
 

@@ -56,7 +56,7 @@ body {
     }
     a {
         text-decoration: none;
-        transition: 0.5s;
+        transition: 0.75s;
     }
     a:hover {
         color: azure;
