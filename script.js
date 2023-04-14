@@ -111,11 +111,11 @@ addEventListener("keydown", event => {
         animateObjectMotion(camera, {x: camera.position.x - 1}, motionDuration);
     }
     if (event.code === 'Space') {
-        animateObjectMotion(mammut, {y: squirrel.position.y + 1}, motionDuration);
-        animateObjectMotion(squirrel, {y: squirrel.position.y + 1}, motionDuration);
+        animateObjectMotion(mammut, {y: 1}, motionDuration);
+        animateObjectMotion(squirrel, {y: 1}, motionDuration);
         setTimeout(() => {
-            animateObjectMotion(mammut, {y: mammut.position.y - 1}, motionDuration);
-            animateObjectMotion(squirrel, {y: squirrel.position.y - 1}, motionDuration);
+            animateObjectMotion(mammut, {y: 0}, motionDuration);
+            animateObjectMotion(squirrel, {y: 0}, motionDuration);
         }, 200);   
     }
     if (event.code === 'Escape') {
