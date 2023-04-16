@@ -10,8 +10,8 @@ body {
     transition: 1s;
 }
 :root {
-    --menuBackGround: rgb(50, 50, 50);
-    --menuSideBar: rgb(100, 100, 100);
+    --menuBackGround: rgb(20, 20, 20);
+    --menuSideBar: rgb(50, 50, 50);
     --lightBlue: rgb(130, 230, 230);
 }
 #menu {
@@ -28,7 +28,7 @@ body {
 }
     #menu-sidebar {
         position: absolute;
-        width: 20%;
+        width: 25%;
         height: 90%;
         margin: 2.5%;
         border-radius: 10px;
@@ -39,9 +39,10 @@ body {
         display: flex;
         justify-content: center;
         font-family: Arial;
+        color: var(--lightBlue);
     }
-    #settings {
-        width: 70%;
+    #settingsDiv {
+        width: 65%;
         height: 90%;
         border-radius: 10px;
         margin: 2.5%;
@@ -49,16 +50,36 @@ body {
         float: right;
         border: 2px solid var(--lightBlue);
     }
+    #settings {
+        display: none;
+        margin: 10%;
+    }
+    #settings ul {
+        font-size: 20px;
+        list-style-type: none;
+        color: var(--lightBlue);
+        font-family: Arial;
+    }
+    #settings ul li {
+        margin-top: 20px;
+    }
     .menu-sidebar-h3 {
         display: flex;
         justify-content: center;
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-family: Arial;
+        transition: 0.75s;
+        color: var(--lightBlue);
     }
-    a {
+    .menu-sidebar-h3:hover {
+        color: azure;
+        cursor: pointer;
+    }
+    .menu-sidebar-h3 a {
         text-decoration: none;
         transition: 0.75s;
+        color: var(--lightBlue);
     }
-    a:hover {
+    .menu-sidebar-h3 a:hover {
         color: azure;
     }
 .divOfPoints {
@@ -74,3 +95,50 @@ body {
         justify-content: center;
         transform: translateY(-50%);
     }
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-left: 15px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+  }
+  input:checked + .slider {
+    background-color: blue;
+  }
+  input:focus + .slider {
+    box-shadow: 0 0 1px blue;
+  }
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  .slider.round {
+    border-radius: 34px;
+  }
+  .slider.round:before {
+    border-radius: 50%;
+  }

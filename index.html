@@ -11,9 +11,20 @@
     <div id="menu">
         <div id="menu-sidebar">
             <h2 class="menu-sidebar-h2">Menü</h2>
+            <h3 class="menu-sidebar-h3" onclick="showSettings()">Beállítások</h3>
+            <h3 class="menu-sidebar-h3">Felhasználói kéziköny</h3>
+            <h3 class="menu-sidebar-h3">Fejlesztői kéziköny</h3>
             <h3 class="menu-sidebar-h3"> <a href="súgó.pdf" target="_blank">Súgó</a></h3>
         </div>
-        <div id="settings">
+        <div id="settingsDiv">
+            <div id="settings">
+                <ul>
+                    <li>Setting1 <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
+                    <li>Setting2 <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
+                    <li>Setting3 <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
+                    <li>Setting4 <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
+                </ul>
+            </div>
         </div>
     </div>
     <div class="divOfPoints"><p id="points"></p></div>
@@ -27,5 +38,14 @@
     }
 </script>
 <script type="module" src="script.js"></script>
+<script>
+    function showSettings() {
+        if (window.getComputedStyle(document.getElementById('settings')).display === 'none') {
+            document.getElementById('settings').style.display = 'block';
+        } else {
+            document.getElementById('settings').style.display = 'none';
+        }
+    }
+</script>
 </body>
 </html>
