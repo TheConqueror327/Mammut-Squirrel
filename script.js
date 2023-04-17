@@ -24,9 +24,9 @@ function checkModels() {
     if (loaded == toLoad) {
         startEventListening();
         init();
-        game3D();
         updateBarriers();
-        console.log(activeBarriers);
+        updateCoins();
+        game3D();
     }
 }
 
@@ -65,7 +65,6 @@ function load3DModels() {
             oakLog.scale.set(1 / 7 * dim3.x, 1 / 7 * dim3.x, 1 / 7 * dim3.x);
             oakLog.position.set(Math.round(Math.random() - 1), 0.25, -50);
             barrierObjects.push(oakLog);
-            console.log(barrierObjects);
             checkModels();
         }
     );
@@ -78,7 +77,6 @@ function load3DModels() {
             stone.scale.set(1 / dim4.x, 1 / dim4.x, 1 / dim4.x);
             stone.position.set(Math.round(Math.random() * 2 - 1), 0, -50);
             barrierObjects.push(stone);
-            console.log(barrierObjects);
             checkModels();
         }
     );
@@ -108,7 +106,7 @@ function load3DModels() {
     loader.load(
         'models/coin2.stl',
         (geometry) => {
-            coin = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0xfcb125}));
+            coin = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color: 0xfff947}));
             let dim7 = new THREE.Box3().setFromObject(coin).getSize(new THREE.Vector3());
             coin.scale.set(1 / (2 * dim7.x), 1 / (2 * dim7.x), 1 / (2 * dim7.x));
             coin.position.y = 0.25;
@@ -194,13 +192,30 @@ let randomBarrier = Math.round(Math.random() * 2);
 let activeBarriers = [];
 let activeBarrierGroup = [];
 var barrierInterval;
+let activeCoins = [];
+let freeSpaceForCoins = [-1, 0, 1];
+let activeCoinX;
+
+function updateCoins() {
+    setInterval(() => {
+        initializeCoin(coin.clone(), activeCoinX, -50);
+    }, 500);
+}
+
+function initializeCoin(object, x, z) {
+    object.position.set(x, 0.25, z);
+    activeCoins.push(object);
+    scene.add(object);
+}
 
 function updateBarriers() {
     barrierInterval = setInterval(
     () => {
         initializeBarrier(barrierObjects[randomBarrier].clone(), randomBarrier);
+        freeSpaceForCoins.splice(freeSpaceForCoins.indexOf(barrierObjects[randomBarrier].position.x), 1);
+        activeCoinX = freeSpaceForCoins[Math.round(Math.random())];
         randomBarrier = Math.round(Math.random() * 2);
-        console.log(activeBarriers);
+        freeSpaceForCoins = [-1, 0, 1];
     }, speed);
 }
 
@@ -240,6 +255,12 @@ function game3D() {
             if (activeBarriers[i][0].position.z > 10) {
                 scene.remove(activeBarriers[i][0]);
                 activeBarriers.splice(i, 1);
+            }
+        }
+        for (let z = 0; z < activeCoins.length; z++) {
+            activeCoins[z].position.z += increment;
+            if (activeCoins[z].position.z > 10) {
+                activeCoins.splice(z, 1);
             }
         }
     }
