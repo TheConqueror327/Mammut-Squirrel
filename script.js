@@ -164,12 +164,13 @@ function startEventListening() {
 }
 
 var oakLogRotations, motionDuration;
-let points, increment, speed;
+let points, coinPoints, increment, speed;
 
 function init() {
     oakLogRotations = [0, Math.PI / 2];
     motionDuration = 200;
     points = 0;
+    coinPoints = 0;
     speed = 2000;
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -250,7 +251,7 @@ function game3D() {
                 squirrel.position.y = (1.093 * (activeBarriers[i][0].position.z / 2 - squirrel.position.z / 2)) / 2.609;
             }
             if ((activeBarriers[i][0].position.z > 2.609) && (Math.round(activeBarriers[i][0].position.x) == Math.round(squirrel.position.x)) && (activeBarriers[i][1] == 2)) {
-                animateObjectMotion(squirrel, {y: squirrel.position.y - 1}, 500);
+                animateObjectMotion(squirrel, {y: 0}, 500);
             }
             if (activeBarriers[i][0].position.z > 10) {
                 scene.remove(activeBarriers[i][0]);
@@ -259,8 +260,18 @@ function game3D() {
         }
         for (let z = 0; z < activeCoins.length; z++) {
             activeCoins[z].position.z += increment;
+            activeCoins[z].rotation.y += 0.01;
             if (activeCoins[z].position.z > 10) {
+                scene.remove(activeCoins[z]);
+                coin.remove(activeCoins[z]);
                 activeCoins.splice(z, 1);
+            }
+            if ((activeCoins[z].position.z > 1) && (activeCoins[z].position.x == squirrel.position.x)) {
+                scene.remove(activeCoins[z]);
+                coin.remove(activeCoins[z]);
+                activeCoins.splice(z, 1);
+                coinPoints++;
+                document.getElementById('coins').innerHTML = coinPoints;
             }
         }
     }
