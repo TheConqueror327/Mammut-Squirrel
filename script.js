@@ -39,7 +39,7 @@ function load3DModels() {
             let dim = new THREE.Box3().setFromObject(mammut).getSize(new THREE.Vector3());
             mammut.scale.set(1 / dim.x, 1 / dim.x, 1 / dim.x);
             mammut.rotation.y = Math.PI / 1.2;
-            mammut.position.set(2, 0, /*5.3*/7);
+            mammut.position.set(2, 0, 7);
             scene.add(mammut);
             checkModels();
         }
