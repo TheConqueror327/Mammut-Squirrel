@@ -150,6 +150,7 @@ function startEventListening() {
                 isStopped = true;
             } else {
                 game3D();
+                updateBarriers();
                 menu.style.display = 'none';
                 document.getElementById('game').style.opacity = 1;
                 isStopped = false;
