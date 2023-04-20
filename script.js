@@ -10,7 +10,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('game').appendChild(renderer.domElement);
 camera.position.set(0.015, 3, 7.5);
 const textureLoader = new THREE.TextureLoader();
-scene.background = textureLoader.load('backgrounds/hatterjo.svg');
+//scene.background = textureLoader.load('backgrounds/hatterjo.svg');
 
 const models = ['models/elephant.stl', 'models/squirrel.stl', 'models/faronk.stl', 'models/stone.stl', 'models/lejto2.stl', 'models/deszka.stl', 'models/coin2.stl'];
 let loaded = 0;
@@ -24,10 +24,15 @@ function checkModels() {
     if (loaded == toLoad) {
         startEventListening();
         init();
+        setSceneBackground(document.getElementById('setting1').innerHTML);
         updateBarriers();
         updateCoins();
         game3D();
     }
+}
+
+function setSceneBackground(fileName) {
+    scene.background = textureLoader.load(fileName);
 }
 
 function load3DModels() {
@@ -146,6 +151,7 @@ function startEventListening() {
                 cancelAnimationFrame(rAF);
                 clearInterval(barrierInterval);
                 menu.style.display = 'block';
+                document.getElementById('switch1').addEventListener('click', () => {setSceneBackground(document.getElementById('setting1').innerHTML)});
                 document.getElementById('game').style.opacity = 0.5;
                 isStopped = true;
             } else {

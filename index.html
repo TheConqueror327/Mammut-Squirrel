@@ -19,10 +19,10 @@
         <div id="settingsDiv">
             <div id="settings">
                 <ul>
-                    <li>Éjszakai mód <div class="switch" id="switch1" onclick="toggleSwitch('switch1', 1)"><div class="switch-circle" id="switch-circle1"></div></div></li>
-                    <li>Kamera forgatásának engedélyezése<div class="switch" id="switch2" onclick="toggleSwitch('switch2', 2)"><div class="switch-circle" id="switch-circle2"></div></div></li>
-                    <li>Setting3<div class="switch" id="switch3" onclick="toggleSwitch('switch3', 3)"><div class="switch-circle" id="switch-circle3"></div></div></li>
-                    <li>Setting4<div class="switch" id="switch4" onclick="toggleSwitch('switch4', 4)"><div class="switch-circle" id="switch-circle4"></div></div></li>
+                    <li>Éjszakai mód <div class="switch" id="switch1" onclick="toggleSwitch('switch1', 1, 'backgrounds/night_mode.png', 'backgrounds/hatterjo.svg')"><div class="switch-circle" id="switch-circle1"></div></div></li>
+                    <li>Kamera forgatásának engedélyezése<div class="switch" id="switch2" onclick="toggleSwitch('switch2', 2, 'xd', 'xDD')"><div class="switch-circle" id="switch-circle2"></div></div></li>
+                    <li>Setting3<div class="switch" id="switch3" onclick="toggleSwitch('switch3', 3, 'xd', 'xDD')"><div class="switch-circle" id="switch-circle3"></div></div></li>
+                    <li>Setting4<div class="switch" id="switch4" onclick="toggleSwitch('switch4', 4, 'xd', 'xDD')"><div class="switch-circle" id="switch-circle4"></div></div></li>
                 </ul>
             </div>
         </div>
@@ -32,7 +32,7 @@
         <p id="coins"></p>
     </div>
     <div id="divOfSettings">
-        <p id="setting1"></p>
+        <p id="setting1">backgrounds/hatterjo.svg</p>
         <p id="setting2"></p>
         <p id="setting3"></p>
         <p id="setting4"></p>
@@ -56,17 +56,17 @@
         }
     }
 
-    function toggleSwitch(id, n) {
+    function toggleSwitch(id, n, setTrue, setFalse) {
         var s = document.getElementById(id);
         var sc = document.getElementById(`switch-circle${n}`);
         if (window.getComputedStyle(sc).marginLeft === '3px') {
             sc.style.marginLeft = '32px';
             s.style.backgroundColor = 'blue';
-            document.getElementById(`setting${n}`).innerHTML = 'true';
+            document.getElementById(`setting${n}`).innerHTML = setTrue;
         } else {
             sc.style.marginLeft = '3px';
             s.style.backgroundColor = 'gray';
-            document.getElementById(`setting${n}`).innerHTML = 'false';
+            document.getElementById(`setting${n}`).innerHTML = setFalse;
         }
     }
 </script>
