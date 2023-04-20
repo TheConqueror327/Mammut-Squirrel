@@ -10,7 +10,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('game').appendChild(renderer.domElement);
 camera.position.set(0.015, 3, 7.5);
 const textureLoader = new THREE.TextureLoader();
-//scene.background = textureLoader.load('backgrounds/hatterjo.svg');
 
 const models = ['models/elephant.stl', 'models/squirrel.stl', 'models/faronk.stl', 'models/stone.stl', 'models/lejto2.stl', 'models/deszka.stl', 'models/coin2.stl'];
 let loaded = 0;
@@ -28,6 +27,7 @@ function checkModels() {
         updateBarriers();
         updateCoins();
         game3D();
+        needToAnalyzeObjects = true;
     }
 }
 
@@ -128,17 +128,17 @@ const menu = document.getElementById('menu');
 
 function startEventListening() {
     addEventListener("keydown", event => {
-        if ((event.code === 'KeyD') && (mammut.position.x <= 2)) {
+        if ((event.code === 'KeyD') && (mammut.position.x <= 2) && (needToAnalyzeObjects)) {
             animateObjectMotion(mammut, {x: mammut.position.x + 1}, motionDuration);
             animateObjectMotion(squirrel, {x: squirrel.position.x + 1}, motionDuration);
             animateObjectMotion(camera, {x: camera.position.x + 1}, motionDuration);
         }
-        if ((event.code === 'KeyA') && (mammut.position.x >= 2)) {
+        if ((event.code === 'KeyA') && (mammut.position.x >= 2) && (needToAnalyzeObjects)) {
             animateObjectMotion(mammut, {x: mammut.position.x - 1}, motionDuration);
             animateObjectMotion(squirrel, {x: squirrel.position.x - 1}, motionDuration);
             animateObjectMotion(camera, {x: camera.position.x - 1}, motionDuration);
         }
-        if (event.code === 'Space') {
+        if ((event.code === 'Space') && (needToAnalyzeObjects)) {
             animateObjectMotion(mammut, {y: 1}, motionDuration);
             animateObjectMotion(squirrel, {y: 1}, motionDuration);
             setTimeout(() => {
@@ -203,6 +203,8 @@ var barrierInterval;
 let activeCoins = [];
 let freeSpaceForCoins = [-1, 0, 1];
 let activeCoinX;
+let isOakLogVertical;
+let needToAnalyzeObjects;
 
 function updateCoins() {
     setInterval(() => {
@@ -235,52 +237,66 @@ function initializeBarrier(object, randBarr) {
         object.rotation.z = oakLogRotations[randomRotation];
         if (randomRotation == 0) {
             object.position.y = 1.6;
+            isOakLogVertical = true;
         } else {
             object.position.y = 0.5;
+            isOakLogVertical = false;
         }
     } else {
         object.position.x = Math.round(Math.random() * 2 - 1);
     }
-    activeBarrierGroup = [object, randBarr];
+    activeBarrierGroup = [object, randBarr, isOakLogVertical];
     activeBarriers.push(activeBarrierGroup);
     scene.add(object);
+}
+
+function gameOver() {
+    increment = 0;
+    clearInterval(barrierInterval);
+    animateObjectMotion(camera, {x: 5, y: 5, z: 5}, 1000);
 }
 
 function game3D() {
 	rAF = requestAnimationFrame(game3D);
 	renderer.render(scene, camera);
-    document.getElementById('points').innerHTML = `Pontszám: ${points}`;
-    points++;
     try {
-        for (let i = 0; i < activeBarriers.length; i++) {
-            activeBarriers[i][0].position.z += increment;
-            if ((activeBarriers[i][0].position.z > 1) && (Math.round(activeBarriers[i][0].position.x) == Math.round(squirrel.position.x)) && (activeBarriers[i][1] == 2) && (squirrel.position.y < 1.1)) {
-                squirrel.position.y = (1.093 * (activeBarriers[i][0].position.z / 2 - squirrel.position.z / 2)) / 2.609;
+        if (needToAnalyzeObjects) {
+            document.getElementById('points').innerHTML = `Pontszám: ${points}`;
+            points++;
+            for (let i = 0; i < activeBarriers.length; i++) {
+                activeBarriers[i][0].position.z += increment;
+                if ((activeBarriers[i][0].position.z > 1) && (Math.round(activeBarriers[i][0].position.x) == Math.round(squirrel.position.x)) && (activeBarriers[i][1] == 2) && (squirrel.position.y < 1.1)) {
+                    squirrel.position.y = (1.093 * (activeBarriers[i][0].position.z / 2 - squirrel.position.z / 2)) / 2.609;
+                }
+                if ((activeBarriers[i][0].position.z > 2.609) && (Math.round(activeBarriers[i][0].position.x) == Math.round(squirrel.position.x)) && (activeBarriers[i][1] == 2)) {
+                    animateObjectMotion(squirrel, {y: 0}, 500);
+                }
+                if (activeBarriers[i][0].position.z > 10) {
+                    scene.remove(activeBarriers[i][0]);
+                    activeBarriers.splice(i, 1);
+                }
+                if ((activeBarriers[i][0].position.z > 0) && (activeBarriers[i][0].position.z < 1) && (squirrel.position.x == activeBarriers[i][0].position.x) && (activeBarriers[i][1] != 2) && (squirrel.position.y == 0)) {
+                    needToAnalyzeObjects = false;
+                    gameOver();
+                }
             }
-            if ((activeBarriers[i][0].position.z > 2.609) && (Math.round(activeBarriers[i][0].position.x) == Math.round(squirrel.position.x)) && (activeBarriers[i][1] == 2)) {
-                animateObjectMotion(squirrel, {y: 0}, 500);
+            for (let z = 0; z < activeCoins.length; z++) {
+                activeCoins[z].position.z += increment;
+                activeCoins[z].rotation.y += 0.01;
+                if (activeCoins[z].position.z > 10) {
+                    scene.remove(activeCoins[z]);
+                    coin.remove(activeCoins[z]);
+                    activeCoins.splice(z, 1);
+                }
+                if ((activeCoins[z].position.z > 1) && (activeCoins[z].position.x == squirrel.position.x)) {
+                    scene.remove(activeCoins[z]);
+                    coin.remove(activeCoins[z]);
+                    activeCoins.splice(z, 1);
+                    coinPoints++;
+                    document.getElementById('coins').innerHTML = coinPoints;
+                }
             }
-            if (activeBarriers[i][0].position.z > 10) {
-                scene.remove(activeBarriers[i][0]);
-                activeBarriers.splice(i, 1);
-            }
-        }
-        for (let z = 0; z < activeCoins.length; z++) {
-            activeCoins[z].position.z += increment;
-            activeCoins[z].rotation.y += 0.01;
-            if (activeCoins[z].position.z > 10) {
-                scene.remove(activeCoins[z]);
-                coin.remove(activeCoins[z]);
-                activeCoins.splice(z, 1);
-            }
-            if ((activeCoins[z].position.z > 1) && (activeCoins[z].position.x == squirrel.position.x)) {
-                scene.remove(activeCoins[z]);
-                coin.remove(activeCoins[z]);
-                activeCoins.splice(z, 1);
-                coinPoints++;
-                document.getElementById('coins').innerHTML = coinPoints;
-            }
-        }
+        } else {camera.lookAt(new THREE.Vector3(0, 0, 0));}
     }
     catch (error) {
         console.log(error);
