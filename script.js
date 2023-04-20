@@ -151,13 +151,14 @@ function startEventListening() {
                 cancelAnimationFrame(rAF);
                 clearInterval(barrierInterval);
                 menu.style.display = 'block';
-                document.getElementById('switch1').addEventListener('click', () => {setSceneBackground(document.getElementById('setting1').innerHTML)});
+                document.getElementById('switch1').addEventListener('click', toggleNightMode());
                 document.getElementById('game').style.opacity = 0.5;
                 isStopped = true;
             } else {
                 game3D();
                 updateBarriers();
                 menu.style.display = 'none';
+                document.getElementById('switch1').removeEventListener('click', toggleNightMode());
                 document.getElementById('game').style.opacity = 1;
                 isStopped = false;
             }
@@ -189,6 +190,10 @@ function init() {
     hillGroup.rotation.y = Math.PI;
     hillGroup.position.set(Math.round(Math.random() * 2 - 1), 0, -50);
     barrierObjects.push(hillGroup);
+}
+
+function toggleNightMode() {
+    setSceneBackground(document.getElementById('setting1').innerHTML);
 }
 
 function animateObjectMotion(object, coordinates, duration) {
