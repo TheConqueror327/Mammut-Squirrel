@@ -298,7 +298,7 @@ function game3D() {
                     coin.remove(activeCoins[z]);
                     activeCoins.splice(z, 1);
                     coinPoints++;
-                    document.getElementById('coins').innerHTML = coinPoints;
+                    document.getElementById('coins').innerHTML = `Érmék: ${coinPoints}`;
                 }
             }
         } else {camera.lookAt(new THREE.Vector3(0, 0, 0));}

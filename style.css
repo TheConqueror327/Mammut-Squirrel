@@ -89,7 +89,10 @@ body {
     height: 10%;
     z-index: 3;
     padding: 0;
-    background-color: white;
+    background-color: rgb(70, 212, 255);
+    display: flex;
+    justify-content: center;
+    font-family: Arial;
 }
 .switch {
     width: 60px;
@@ -111,4 +114,10 @@ body {
 }
 #divOfSettings {
     display: none;
+}
+#coins {
+    float: right;
+}
+#points {
+    float: left;
 }
