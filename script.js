@@ -259,6 +259,10 @@ function gameOver() {
     increment = 0;
     clearInterval(barrierInterval);
     animateObjectMotion(camera, {x: 5, y: 5, z: 5}, 1000);
+    document.getElementById('game').style.opacity = 0.5
+    setTimeout(() => {
+        document.getElementById('GameOver').style.display = "block";   
+    },1000)
 }
 
 function game3D() {

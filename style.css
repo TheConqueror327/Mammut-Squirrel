@@ -20,7 +20,7 @@ body {
     height: 50%;
     transform: translate(50%);
     top: 25%;
-    z-index: 2;
+    z-index: 3;
     background-color: var(--menuBackGround);
     border-radius: 10px;
     display: none;
@@ -120,4 +120,15 @@ body {
 }
 #points {
     float: left;
+}
+#GameOver {
+    display: none;
+    width: 50%;
+    height: 50%;
+    background-color: transparent;
+    z-index: 2;
+    position: absolute;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-size: 4cm;
 }
