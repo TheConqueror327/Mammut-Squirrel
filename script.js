@@ -20,15 +20,21 @@ var barrierObjects = [];
 
 function checkModels() {
     loaded++;
-    if (loaded == toLoad) {
-        startEventListening();
-        init();
-        setSceneBackground(document.getElementById('setting1').innerHTML);
-        updateBarriers();
-        updateCoins();
-        game3D();
-        needToAnalyzeObjects = true;
+    if ((loaded == toLoad) && (window.getComputedStyle(document.getElementById('loading')).display === 'none')) {
+        start();
     }
+}
+
+function start() {
+    document.getElementById('game').style.display = 'block';
+    startEventListening();
+    init();
+    setSceneBackground(document.getElementById('setting1').innerHTML);
+    updateBarriers();
+    updateCoins();
+    game3D();
+    needToAnalyzeObjects = true;
+    document.getElementById('divOfPoints').style.display = 'flex';
 }
 
 function setSceneBackground(fileName) {
