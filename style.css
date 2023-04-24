@@ -153,9 +153,12 @@ body {
     width: 25%;
     height: 25%;
 }
-#loding-line-div {
-    width: 10%;
-    height: 2.5%;
+#loading-line-div {
+    height: 25px;
     background-color: blue;
-    display: block;
+    margin-left: 40%;
+}
+#loading-percent-paragraph  {
+    display: flex;
+    justify-content: center;
 }

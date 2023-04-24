@@ -11,19 +11,9 @@ document.getElementById('game').appendChild(renderer.domElement);
 camera.position.set(0.015, 3, 7.5);
 const textureLoader = new THREE.TextureLoader();
 
-const models = ['models/elephant.stl', 'models/squirrel.stl', 'models/faronk.stl', 'models/stone.stl', 'models/lejto2.stl', 'models/deszka.stl', 'models/coin2.stl'];
-let loaded = 0;
-let toLoad = models.length;
 var mammut, squirrel, oakLog, stone, downHill, oakBoard, coin;
 const hillGroup = new THREE.Group();
 var barrierObjects = [];
-
-function checkModels() {
-    loaded++;
-    if ((loaded == toLoad) && (window.getComputedStyle(document.getElementById('loading')).display === 'none')) {
-        start();
-    }
-}
 
 function start() {
     document.getElementById('game').style.display = 'block';
@@ -36,6 +26,38 @@ function start() {
     needToAnalyzeObjects = true;
     document.getElementById('divOfPoints').style.display = 'flex';
 }
+
+function loadingScreen() {
+    var loadingDiv = document.getElementById('loading');
+    var logo = document.createElement('img');
+    logo.setAttribute('id', 'logo');
+    logo.style.marginLeft = `${(window.innerWidth - 480) / 2}px`;
+    logo.src = 'backgrounds/jatek logo.png';
+    loadingDiv.appendChild(logo);
+    var loadingLineDiv = document.createElement('div');
+    loadingLineDiv.setAttribute('id', 'loading-line-div');
+    var loadingPercentParagraph = document.createElement('p');
+    loadingPercentParagraph.innerHTML = '0%';
+    loadingPercentParagraph.setAttribute('id', 'loading-percent-paragraph');
+    loadingDiv.appendChild(loadingLineDiv);
+    loadingDiv.appendChild(loadingPercentParagraph);
+    let currentWidth = 0;
+    let currentPercent;
+    var loadedPercentWidth = 0.1;
+    var loadingInterval = setInterval(() => {
+        loadingLineDiv.style.width = `${currentWidth}%`;
+        currentPercent = Math.round(5 * currentWidth);
+        loadingPercentParagraph.innerHTML = `${currentPercent}%`;
+        currentWidth += loadedPercentWidth;
+        if ((currentPercent > 100)) {
+            clearInterval(loadingInterval);
+            loadingDiv.style.display = 'none';
+            start();
+        }
+    }, 50);
+}
+
+loadingScreen();
 
 function setSceneBackground(fileName) {
     scene.background = textureLoader.load(fileName);
@@ -52,7 +74,6 @@ function load3DModels() {
             mammut.rotation.y = Math.PI / 1.2;
             mammut.position.set(2, 0, 7);
             scene.add(mammut);
-            checkModels();
         }
     );
     loader.load(
@@ -64,7 +85,6 @@ function load3DModels() {
             squirrel.rotation.set(Math.PI / 2, Math.PI, 0);
             squirrel.position.set(0, 0, 1);
             scene.add(squirrel);
-            checkModels();
         }
     );
     loader.load(
@@ -76,7 +96,6 @@ function load3DModels() {
             oakLog.scale.set(1 / 7 * dim3.x, 1 / 7 * dim3.x, 1 / 7 * dim3.x);
             oakLog.position.set(Math.round(Math.random() - 1), 0.25, -50);
             barrierObjects.push(oakLog);
-            checkModels();
         }
     );
     loader.load(
@@ -88,7 +107,6 @@ function load3DModels() {
             stone.scale.set(1 / dim4.x, 1 / dim4.x, 1 / dim4.x);
             stone.position.set(Math.round(Math.random() * 2 - 1), 0, -50);
             barrierObjects.push(stone);
-            checkModels();
         }
     );
     loader.load(
@@ -99,7 +117,6 @@ function load3DModels() {
             downHill.scale.set(1 / dim5.x, 1 / dim5.x, 1 / dim5.x);
             downHill.position.set(0, 0.5, 3);
             hillGroup.add(downHill);
-            checkModels();
         }
     );
     loader.load(
@@ -111,7 +128,6 @@ function load3DModels() {
             oakBoard.position.set(0, 0.5, 2.9);
             oakBoard.rotation.set(Math.PI / -2, 0, Math.PI);
             hillGroup.add(oakBoard);
-            checkModels();
         }
     )
     loader.load(
@@ -121,7 +137,6 @@ function load3DModels() {
             let dim7 = new THREE.Box3().setFromObject(coin).getSize(new THREE.Vector3());
             coin.scale.set(1 / (2 * dim7.x), 1 / (2 * dim7.x), 1 / (2 * dim7.x));
             coin.position.y = 0.25;
-            checkModels();
         }
     )
 }

@@ -37,10 +37,7 @@
         <p id="setting3"></p>
         <p id="setting4"></p>
     </div>
-    <div class="loading">
-        <img src="backgrounds/jatek logo.png" id="logo">
-        <div id="loading-line-div"></div>
-    </div>
+    <div class="loading" id="loading"></div>
     <div id="GameOver">
         <h1>Game Over</h1>
     </div>
@@ -76,17 +73,6 @@
             document.getElementById(`setting${n}`).innerHTML = setFalse;
         }
     }
-
-    function loadingScreen() {
-        var loadingDiv = document.getElementById('loaded');
-        var logo = document.getElementById('logo');
-        logo.style.marginLeft = `${(window.innerWidth - 400) / 2}px`;
-        setInterval(() => {
-            
-        }, 250);
-    }
-
-    loadingScreen();
 </script>
 </body>
 </html>
