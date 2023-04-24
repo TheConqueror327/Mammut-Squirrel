@@ -127,8 +127,9 @@ body {
     height: 50%;
     background-color: transparent;
     z-index: 2;
-    position: absolute;
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-weight: bold;
-    font-size: 4cm;
+    font-size: 3cm;
+    transform: translate(50%);
+    position: absolute;
 }
