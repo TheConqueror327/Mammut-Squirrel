@@ -84,15 +84,17 @@ body {
     }
 .divOfPoints {
     position: absolute;
-    margin-left: 90%;
-    width: 10%;
-    height: 10%;
+    margin-left: 80%;
+    width: 20%;
+    height: 20%;
     z-index: 3;
     padding: 0;
-    background-color: rgb(70, 212, 255);
+    background-color: rgb(255, 255, 255);
     display: flex;
     justify-content: center;
-    font-family: Arial;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    border-bottom-left-radius: 10px;
+    font-weight: bold;
 }
 .switch {
     width: 60px;
@@ -117,9 +119,15 @@ body {
 }
 #coins {
     float: right;
+    margin-left: 1cm;
+    display: flex;
+    align-items: center;
 }
 #points {
     float: left;
+    margin-right: 1cm;
+    display: flex;
+    align-items: center;
 }
 #GameOver {
     display: none;
