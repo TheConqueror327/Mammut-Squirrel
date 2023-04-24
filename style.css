@@ -52,7 +52,8 @@ body {
     }
     #settings {
         display: none;
-        margin: 10%;
+        margin-left: 2.5%;
+        margin-top: 10%;
     }
     #settings ul {
         font-size: 20px;
@@ -62,6 +63,7 @@ body {
     }
     #settings ul li {
         margin-top: 20px;
+        margin-right: 20px;
     }
     .menu-sidebar-h3 {
         display: flex;
