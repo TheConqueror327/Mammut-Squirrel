@@ -146,26 +146,41 @@ load3DModels();
 var rAF;
 let isStopped = false;
 const menu = document.getElementById('menu');
+let isLeftPressed = false;
+let isRightPressed = false;
+let isJumping = false;
 
 function startEventListening() {
     addEventListener("keydown", event => {
-        if ((event.code === 'KeyD') && (mammut.position.x <= 2) && (needToAnalyzeObjects)) {
+        if ((event.code === 'KeyD') && (mammut.position.x <= 2) && (needToAnalyzeObjects) && (!isLeftPressed)) {
+            isLeftPressed = true;
             animateObjectMotion(mammut, {x: mammut.position.x + 1}, motionDuration);
             animateObjectMotion(squirrel, {x: squirrel.position.x + 1}, motionDuration);
             animateObjectMotion(camera, {x: camera.position.x + 1}, motionDuration);
+            setTimeout(() => {
+                isLeftPressed = false;
+            }, motionDuration);
         }
-        if ((event.code === 'KeyA') && (mammut.position.x >= 2) && (needToAnalyzeObjects)) {
+        if ((event.code === 'KeyA') && (mammut.position.x >= 2) && (needToAnalyzeObjects) && (!isRightPressed)) {
+            isRightPressed = true;
             animateObjectMotion(mammut, {x: mammut.position.x - 1}, motionDuration);
             animateObjectMotion(squirrel, {x: squirrel.position.x - 1}, motionDuration);
             animateObjectMotion(camera, {x: camera.position.x - 1}, motionDuration);
+            setTimeout(() => {
+                isRightPressed = false;
+            }, motionDuration);
         }
-        if ((event.code === 'Space') && (needToAnalyzeObjects)) {
+        if ((event.code === 'Space') && (needToAnalyzeObjects) && (!isJumping)) {
+            isJumping = true;
             animateObjectMotion(mammut, {y: 1}, motionDuration);
             animateObjectMotion(squirrel, {y: 1}, motionDuration);
             setTimeout(() => {
                 animateObjectMotion(mammut, {y: 0}, motionDuration);
                 animateObjectMotion(squirrel, {y: 0}, motionDuration);
             }, 200);
+            setTimeout(() => {
+                isJumping = false;
+            }, 600);
         }
         if (event.code === 'Escape') {
             if (!isStopped) {
